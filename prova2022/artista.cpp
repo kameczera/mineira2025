@@ -6,27 +6,27 @@ using namespace std;
 int main() {
     int n;
     cin >> n;
-    vector<int> k(n);
-    
+    vector<int> days;
     for(int i = 0; i < n; i++) {
-        cin >> k[i];
-    }
-    vector<pair<int, int>> sums;
-    for(int i = 0; i < n; i++) {
-        for(pair<int, int> sum : sums) {
-            if(i - sum.second > 1) {
-                pair<int, int> new_sum = {sum.first + k[i], i};
-                sums.push_back(new_sum);
-            }
-        }
-        pair<int, int> sum = {k[i], i};
-        sums.push_back(sum);
-    }
-    int highest = 0;
-    for(pair<int, int> p : sums){
-        if(p.first > highest) highest = p.first;
+        int x;
+        cin >> x;
+        days.push_back(x);
     }
 
-    cout << highest;
-    return 0;
+    vector<pair<int, int>> save;
+
+    for(int i = 0; i < n; i++) {
+        for(pair<int, int> curr : save) {
+            if(i - curr.second > 1) {
+                save.push_back({curr.first + days[i], i});
+            }
+        }
+        save.push_back({days[i], i});
+    }
+    int ans = 0;
+    for(pair<int, int> curr : save) {
+        if(curr.first > ans) ans = curr.first;
+    }
+
+    cout << ans;
 }
