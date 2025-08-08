@@ -1,12 +1,12 @@
 #include <iostream>
 #include <vector>
 #include <queue>
-#include <algorithm>
+#include <map>
 
 using namespace std;
 
 int gcd(int a, int b) {
-    while (b) {
+    while(b) {
         int tmp = a % b;
         a = b;
         b = tmp;
@@ -15,55 +15,46 @@ int gcd(int a, int b) {
 }
 
 int main() {
-    int N, M, T, ci, cj;
-    cin >> N >> M >> T >> ci >> cj;
-    ci--; cj--; // Convertendo para 0-based
-
-    vector<vector<char>> grid(N, vector<char>(M));
+    int width, height, time, x, y;
+    cin >> width >> height >> time >> x >> y;
     int total_empty = 0;
-
-    for (int i = 0; i < N; ++i) {
-        for (int j = 0; j < M; ++j) {
+    vector<vector<char>> grid(width, vector<char>(height));
+    for(int i = 0; i < width; i++) {
+        for(int j = 0; j < height; j++) {
             cin >> grid[i][j];
-            if (grid[i][j] == '.') total_empty++;
+            if(grid[i][j] == '.') total_empty++;
         }
     }
-
-    vector<vector<int>> visited(N, vector<int>(M, -1));
     queue<pair<int, int>> q;
-
-    visited[ci][cj] = 0;
-    q.push({ci, cj});
-    int reachable = 0;
-
+    vector<vector<int>> visited(width,vector<int>(height));
+    q.push(make_pair(x, y));
     int dx[] = {1, -1, 0, 0};
     int dy[] = {0, 0, 1, -1};
-
-    while (!q.empty()) {
+    int reachable = 0;
+    while(!q.empty()) {
         pair<int, int> front = q.front(); q.pop();
         int x = front.first;
         int y = front.second;
         int dist = visited[x][y];
-        if (dist > T) continue;
+        if(dist > time) continue;
 
-        if (grid[x][y] == '.') reachable++;
+        if(grid[x][y] == '.') reachable++;
 
-        for (int dir = 0; dir < 4; ++dir) {
+        for(int dir = 0; dir < 4; ++dir) {
             int nx = x + dx[dir];
             int ny = y + dy[dir];
-            if (nx >= 0 && nx < N && ny >= 0 && ny < M && grid[nx][ny] == '.' && visited[nx][ny] == -1) {
+            if(nx >= 0 && nx < width && ny < height && grid[nx][ny] == '.' && visited[nx][ny] == -1) {
                 visited[nx][ny] = dist + 1;
                 q.push({nx, ny});
             }
         }
     }
 
-    if (reachable == 0) {
-        cout << "0 1\n";
-    } else {
+    if(reachable == 0) cout << "0 1\n";
+    else {
         int divisor = gcd(reachable, total_empty);
         cout << (reachable / divisor) << " " << (total_empty / divisor) << "\n";
     }
 
     return 0;
-}
+}   
